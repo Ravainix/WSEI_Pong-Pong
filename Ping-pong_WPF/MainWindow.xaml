@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ping_pong_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="430" Width="606">
+    <Canvas Width="600" Height="400">
+        <Rectangle x:Name="paddel1" 
+                        Height="100" Width="20" Fill="#FF04BD2E" 
+                        Canvas.Top="150"
+                        Canvas.Left="10"/>
+        <Rectangle x:Name="paddel2" 
+                        Height="100" Width="20" Fill="#FFFF000C" 
+                        Canvas.Top="150"
+                        Canvas.Right="20"/>
+        <Line X1="300" X2="300" StrokeThickness="1" Stroke="Black" Y2="400"/>
+        <Ellipse x:Name="Ball" Width="16" Height="15" 
+                     StrokeThickness="0.1" Fill="#000"
+                     Canvas.Left="292"
+                     Canvas.Top="192" />
+
+        <Label x:Name="Score" 
+               Content="0:0"
+               FontSize="20" Canvas.Left="300"/>
+    </Canvas>
+
 </Window>
