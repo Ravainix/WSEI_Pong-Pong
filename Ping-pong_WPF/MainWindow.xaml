@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:Ping_pong_WPF"
         mc:Ignorable="d"
         Title="Ping Pong" Height="430" Width="606"
-        ResizeMode="NoResize">
-    <Canvas Name="Canvas"  Width="600" Height="400" Background="#e8ecf1">
+        ResizeMode="NoResize" 
+       >
+    <Canvas Name="Canvas"  Width="600" Height="400" Background="#e8ecf1"  MouseMove="HandleMouseMove">
         <Rectangle x:Name="paddel1" 
                         Height="100" Width="20" Fill="#FF04BD2E" 
                         Canvas.Top="{Binding Y}"
@@ -17,13 +18,13 @@
                         Canvas.Top="{Binding Y}"
                         Canvas.Right="20"/>
         <Line X1="300" X2="300" StrokeThickness="1" Stroke="Black" Y2="400"/>
-        <Ellipse x:Name="Ball1" Width="16" Height="15" 
+        <Ellipse x:Name="Ball1" Width="15" Height="15" 
                      StrokeThickness="0.1" Fill="#000"
                      Canvas.Left="{Binding X}"
                      Canvas.Top="{Binding Y}" />
 
         <Label x:Name="Score" 
-               Content="{Binding X}"
+               Content="{Binding PlayersScore}"
                FontSize="20" Canvas.Left="295"
                />
     </Canvas>
