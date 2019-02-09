@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Ping_pong_WPF
 {
@@ -20,9 +22,23 @@ namespace Ping_pong_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        Ball _ball = new Ball(300, 200);
+        Pad _pad1 = new Pad(150);
+        Pad _pad2 = new Pad(200);
+        Kontroler Controller;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Ball1.DataContext = _ball;
+            paddel1.DataContext = _pad1;
+            paddel2.DataContext = _pad2;
+            Score.DataContext = _ball;
+
+            Controller = new Kontroler(Canvas, _ball, _pad1, _pad2);
+            Controller.runGame();
+
         }
     }
 }
