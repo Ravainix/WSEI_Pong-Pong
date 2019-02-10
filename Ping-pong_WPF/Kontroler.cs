@@ -15,90 +15,144 @@ namespace Ping_pong_WPF
         private Canvas canv;
         private Score score;
         private Ball ball;
-        private Pad padelPlayer;
-        private Pad padelAI;
+        private Pad paddlePlayer;
+        private Pad paddleAI;
         private DispatcherTimer timer = new DispatcherTimer();
 
 
         public Kontroler (Canvas canv, Ball ball, Pad padelPlayer, Pad padelAI, Score score)
         {
             this.ball = ball;
-            this.padelPlayer = padelPlayer;
-            this.padelAI = padelAI;
+            this.paddlePlayer = padelPlayer;
+            this.paddleAI = padelAI;
             this.canv = canv;
             this.score = score;
         }
 
         private double _angle = 140;
         private double _speed = 2;
-        private int _padSpeed = 7;
 
         public double Angle { get => _angle; set => _angle = value; }
         public double Speed { get => _speed; set => _speed = value; }
 
-        public void runGame()
+        private double VelocityX;
+        private double VelocityY;
+
+        public void RunGame()
         {
+            VelocityX = 0.8;
+            VelocityY = 0.001;
+
             timer.Interval = TimeSpan.FromMilliseconds(10);
-            timer.Tick += timer_Tick;
+            timer.Tick += Timer_Tick;
             timer.Start();
         }
 
-        public void stopGame()
+        public void StopGame()
         {
             timer.Stop();
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
-            double radian = (Math.PI / 180) * Angle;
-            Vector vector = new Vector { X = Math.Sin(radian), Y = -Math.Cos(radian) };
+            double newBallX = ball.X + VelocityX * 10;
+            double newBallY = ball.Y + VelocityY * 10;
+            double MAXBOUNCEANGLE = Math.PI / 12;
 
-            if (ball.Y <= 0)
-                Angle = Angle + (180 - 2 * Angle);
+            double intersectX;
+            double intersectY;
+            double relativeIntersectY;
+            double bounceAngle;
+            double ballSpeed;
+            double ballTravelLeft;
 
-            if (ball.Y >= canv.ActualHeight - 15)
-                Angle = Angle + (180 - 2 * Angle);
+            if(newBallY < 0)
+            {
+                newBallY = -newBallY;
+                VelocityY = -VelocityY;
+            } else if(newBallY + 10 > canv.Height)
+            {
+                newBallY -= 2 * ((newBallY + 10) - (canv.Height));
+                VelocityY = -VelocityY;
+            }
+
+            //lewa 
+            if (newBallX < paddlePlayer.X + paddlePlayer.Width && ball.X >= paddlePlayer.X + paddlePlayer.Width)
+            {
+                intersectX = paddlePlayer.X + paddlePlayer.Width;
+                intersectY = ball.Y - ((ball.X - (paddlePlayer.X + paddlePlayer.Width)) * (ball.Y - newBallY)) / (ball.X - newBallX);
+                if (intersectY >= paddlePlayer.Y && intersectY <= paddlePlayer.Y + paddlePlayer.Height)
+                {
+                    relativeIntersectY = (paddlePlayer.Y + (paddlePlayer.Height / 2)) - intersectY;
+                    bounceAngle = (relativeIntersectY / (paddlePlayer.Height / 2)) * (Math.PI / 2 - MAXBOUNCEANGLE);
+                    ballSpeed = Math.Sqrt(VelocityX * VelocityX + VelocityY * VelocityY);
+                    ballTravelLeft = (newBallY - intersectY) / (newBallY - ball.Y);
+                    VelocityX = ballSpeed * Math.Cos(bounceAngle);
+                    VelocityY = ballSpeed * -Math.Sin(bounceAngle);
+                    newBallX = intersectX + ballTravelLeft * ballSpeed * Math.Cos(bounceAngle);
+                    newBallY = intersectY + ballTravelLeft * ballSpeed * Math.Sin(bounceAngle);
+                }
+            }
 
 
-            ball.X += vector.X * Speed;
-            ball.Y += vector.Y * Speed;
+            //prawa
+            if (newBallX > canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width && ball.X <= canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width)
+            {
+                intersectX = canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width;
+                intersectY = ball.Y - ((ball.X - (canv.Width - paddleAI.X - paddleAI.Width)) * (ball.Y - newBallY)) / (ball.X - newBallX);
+                if (intersectY >= paddleAI.Y && intersectY <= paddleAI.Y + paddleAI.Height)
+                {
+                    relativeIntersectY = (paddleAI.Y + (paddleAI.Height / 2)) - intersectY;
+                    bounceAngle = (relativeIntersectY / (paddleAI.Height / 2)) * (Math.PI / 2 - MAXBOUNCEANGLE);
+                    ballSpeed = Math.Sqrt(VelocityX * VelocityX + VelocityY * VelocityY);
+                    ballTravelLeft = (newBallY - intersectY) / (newBallY - VelocityY);
+                    VelocityX = ballSpeed * Math.Cos(bounceAngle) * -1;
+                    VelocityY = ballSpeed * Math.Sin(bounceAngle) * -1;
+                    newBallX = intersectX - ballTravelLeft * ballSpeed * Math.Cos(bounceAngle);
+                    newBallY = intersectY - ballTravelLeft * ballSpeed * Math.Sin(bounceAngle);
+                }
+            }
 
-            if (ball.X > canv.ActualWidth - 20)
+
+            //SpeedUp();
+
+            if (ball.X > canv.Width - 20)
             {
                 score.Player1Win();
-                stopGame();
+                StopGame();
             }
 
             if (ball.X < 0)
             {
                 score.Player2Win();
-                stopGame();
+                StopGame();
             }
+
+            ball.X = newBallX;
+            ball.Y = newBallY;
         }
 
         private void ResetGame ()
         {
-            ball.X = canv.ActualWidth / 2;
-            ball.Y = canv.ActualHeight / 2;
+            ball.X = canv.Width / 2;
+            ball.Y = canv.Height / 2;
         }
 
-        public void movePad(double Y, Pad pad)
+        public void MovePad(double Y, Pad pad)
         {
-            double padY = Y - 100 / 2;
+            double middlePad = Y - pad.Height / 2;
 
-            pad.Y = padY;
+            pad.Y = middlePad;
 
-            if (padY > canv.ActualHeight - 100)
+            if (middlePad > canv.ActualHeight - pad.Height)
             {
-                pad.Y = canv.ActualHeight - 100;
+                pad.Y = canv.ActualHeight - pad.Height;
             }
 
-            if (padY <= 0)
+            if (middlePad <= 0)
             {
                 pad.Y = 0;
             }
-
         }
-
     }
 }

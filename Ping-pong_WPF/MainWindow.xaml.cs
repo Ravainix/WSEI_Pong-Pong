@@ -22,9 +22,9 @@ namespace Ping_pong_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        Ball _ball = new Ball(300, 200);
-        Pad _pad1 = new Pad(150);
-        Pad _pad2 = new Pad(200);
+        Ball _ball = new Ball(300, 200, 10);
+        Pad _pad1 = new Pad(4, 150, 10, 100);
+        Pad _pad2 = new Pad(4, 200, 10, 100);
         Score _score = new Score();
         Kontroler Controller;
 
@@ -35,16 +35,16 @@ namespace Ping_pong_WPF
             Ball1.DataContext = _ball;
             paddel1.DataContext = _pad1;
             paddel2.DataContext = _pad2;
-            Score.DataContext = _score;
+            Score.DataContext = _ball;
 
             Controller = new Kontroler(Canvas, _ball, _pad1, _pad2, _score);
-            Controller.runGame();
-
+            Controller.RunGame();
         }
 
         private void HandleMouseMove(object sender, MouseEventArgs e)
         {
-            Controller.movePad(e.GetPosition(this).Y, _pad1);
+            Controller.MovePad(e.GetPosition(this).Y, _pad1);
+            Controller.MovePad(e.GetPosition(this).Y, _pad2);
         }
     }
 }

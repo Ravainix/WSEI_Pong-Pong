@@ -5,26 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ping_pong_WPF"
         mc:Ignorable="d"
-        Title="Ping Pong" Height="430" Width="606"
+        Title="Ping Pong" Height="430" Width="618"
         ResizeMode="NoResize" 
        >
     <Canvas Name="Canvas"  Width="600" Height="400" Background="#e8ecf1"  MouseMove="HandleMouseMove">
         <Rectangle x:Name="paddel1" 
-                        Height="100" Width="20" Fill="#FF04BD2E" 
+                        Height="{Binding Height}" Width="{Binding Width}" Fill="#FF04BD2E" 
                         Canvas.Top="{Binding Y}"
-                        Canvas.Left="10"/>
+                        Canvas.Left="{Binding X}"/>
         <Rectangle x:Name="paddel2" 
-                        Height="100" Width="20" Fill="#FFFF000C" 
+                        Height="{Binding Height}" Width="{Binding Width}" Fill="#FFFF000C" 
                         Canvas.Top="{Binding Y}"
-                        Canvas.Right="20"/>
-        <Line X1="300" X2="300" StrokeThickness="1" Stroke="Black" Y2="400"/>
-        <Ellipse x:Name="Ball1" Width="15" Height="15" 
+                        Canvas.Right="{Binding X}"/>
+        <Line X1="560" X2="560" StrokeThickness="1" Stroke="Black" Y2="400"/>
+        <Ellipse x:Name="Ball1" Width="{Binding Radius}" Height="{Binding Radius}" 
                      StrokeThickness="0.1" Fill="#000"
                      Canvas.Left="{Binding X}"
                      Canvas.Top="{Binding Y}" />
 
         <Label x:Name="Score" 
-               Content="{Binding PlayersScore}"
+               Content="{Binding X}"
                FontSize="20" Canvas.Left="295"
                />
     </Canvas>

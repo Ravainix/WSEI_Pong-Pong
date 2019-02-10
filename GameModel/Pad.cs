@@ -9,19 +9,28 @@ namespace GameModel
 {
     public class Pad : INotifyPropertyChanged
     {
-        private double _y;
+        private double x;
+        private double y;
+        private double width;
+        private double height;
 
-        public Pad(double y)
+        public Pad(double x, double y,int width, int height)
         {
+            this.x = x;
             Y = y;
+            this.width = width;
+            this.height = height;
         }
 
+        public double Width { get => width; }
+        public double Height { get => height; }
+        public double X { get => x; }
         public double Y
         {
-            get => _y;
+            get => this.y;
             set
             {
-                _y = value;
+                this.y = value;
                 OnPropertyChanged("Y");
             }
         }

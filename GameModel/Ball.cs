@@ -9,35 +9,37 @@ namespace GameModel
 {
     public class Ball : INotifyPropertyChanged
     {
-        private double _x;
-        private double _y;
-
-        private bool _movingRight;
-        private int _leftResult;
-        private int _rightResult;
+        private double x;
+        private double y;
+        private int width;
+        private int height;
 
         public double X {
-            get => _x;
+            get => this.x;
             set {
-                _x = value;
+                this.x = value;
                OnPropertyChanged("X");
             }
         }
 
         public double Y
         {
-            get => _y;
+            get => y;
             set
             {
-                _y = value;
+                y = value;
                OnPropertyChanged("Y");
             }
         }
 
-        public Ball(int x, int y)
+        public double Radius { get => width; }
+
+        public Ball(int x, int y, int radius)
         {
             X = x;
             Y = y;
+            this.width = radius;
+            this.height = radius;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
