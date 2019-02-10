@@ -208,7 +208,7 @@ namespace Ping_pong_WPF
 
         /// <summary>
         /// Prosta "sztuczna" inteligencja odpowiadajaca za poruszanie paletka
-        /// Koncepcja zaczerpnieta z: https://stackoverflow.com/questions/23960654/unity-pong-ai-movement-speed
+        /// Kod zaczerpniety z: http://richardcarter.org/
         /// </summary>
         public void ProcessAI(bool state)
         {
