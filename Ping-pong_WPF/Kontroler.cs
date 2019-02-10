@@ -10,6 +10,9 @@ using System.Windows.Threading;
 
 namespace Ping_pong_WPF
 {
+    /// <summary>
+    /// Klasa odpowiadajaca za logike gry 
+    /// </summary>
     public class Kontroler
     {
         private Canvas canv;
@@ -19,7 +22,9 @@ namespace Ping_pong_WPF
         private Pad paddleAI;
         private DispatcherTimer timer = new DispatcherTimer();
 
-
+        /// <summary>
+        /// Konstruktor klasy kontroler
+        /// </summary>
         public Kontroler (Canvas canv, Ball ball, Pad padelPlayer, Pad padelAI, Score score)
         {
             this.ball = ball;
@@ -37,7 +42,10 @@ namespace Ping_pong_WPF
         public double PaddelVelocity { get => paddelV; set => paddelV = value; }
         public bool AiTurnOn { get => aiStatus; set => aiStatus = value; }
 
-        public void RunGame()
+        /// <summary>
+        /// Ustawia poczatkowe wartosci predkosci pilki oraz petle(Game Loop) odpowiadajaca za poruszanie sie elementow
+        /// </summary>
+        public void SetUpGame()
         {
             VelocityX = 0.8;
             VelocityY = 0.001;
@@ -47,22 +55,38 @@ namespace Ping_pong_WPF
             timer.Start();
         }
 
+        /// <summary>
+        /// Zatrzymuje petle
+        /// </summary>
         public void StopGame()
         {
             timer.Stop();
         }
 
+        /// <summary>
+        /// Wznawia petle
+        /// </summary>
         public void StartGame()
         {
             timer.Start();
         }
 
+        /// <summary>
+        /// Metoda wykonywana przy kazdej iteracji petli
+        /// Zmienia pozycje paletki oraz pozycje pilki
+        /// </summary>
         private void Timer_Tick(object sender, EventArgs e)
         {
             ProcessAI(AiTurnOn);
             UpdateBallPosition();
         }
 
+        /// <summary>
+        /// Zmienia pozycje pilki
+        /// Podstawowa fizyka odbicia pilki
+        /// Koncepcja oraz kod skopiowano z:
+        /// https://gamedev.stackexchange.com/questions/4253/in-pong-how-do-you-calculate-the-balls-direction-when-it-bounces-off-the-paddl
+        /// </summary>
         private void UpdateBallPosition()
         {
             double newBallX = ball.X + VelocityX * 10;
@@ -148,6 +172,9 @@ namespace Ping_pong_WPF
             ball.Y = newBallY;
         }
 
+        /// <summary>
+        /// Ustawia poczatkowe wartosci pilki
+        /// </summary>
         public void ResetGame ()
         {
             ball.X = 300;
@@ -159,6 +186,9 @@ namespace Ping_pong_WPF
             StartGame();
         }
 
+        /// <summary>
+        /// Ustawia paletke w srodkowej pozycji wzgledem osi Y 
+        /// </summary>
         public void MovePad(double Y, Pad pad)
         {
             double middlePad = Y - pad.Height / 2;
@@ -176,6 +206,10 @@ namespace Ping_pong_WPF
             }
         }
 
+        /// <summary>
+        /// Prosta "sztuczna" inteligencja odpowiadajaca za poruszanie paletka
+        /// Koncepcja zaczerpnieta z: https://stackoverflow.com/questions/23960654/unity-pong-ai-movement-speed
+        /// </summary>
         public void ProcessAI(bool state)
         {
             if (state)

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace GameModel
 {
+    /// <summary>
+    /// Klasa reprezentujaca aktualny wynik gry
+    /// </summary>
     public class Score : INotifyPropertyChanged
     {
         private int player1;
@@ -43,8 +46,14 @@ namespace GameModel
             return string.Format("{0}:{1}", player1, player2);
         }
 
+        /// <summary>
+        /// Zdarzenie powiadamiajace o zmianie wlasciwosci
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Obsluga zdarzenia PropertyChanged
+        /// </summary>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -28,6 +28,10 @@ namespace Ping_pong_WPF
         Score _score = new Score();
         Kontroler Controller;
 
+
+        /// <summary>
+        /// Konstruktor klasy MainWindow
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -41,29 +45,31 @@ namespace Ping_pong_WPF
 
         }
 
+        /// <summary>
+        /// Zmienna zapobiegajaca ponownemu rozpoczeciu gry po starcie
+        /// </summary>
         private bool gameStarted = false;
 
+
+        /// <summary>
+        /// Obsluga zdarzenia MouseMove
+        /// Paletka sledzi ruch myszki
+        /// </summary>
         private void HandleMouseMove(object sender, MouseEventArgs e)
         {
             Controller.MovePad(e.GetPosition(this).Y, _pad1);
-            //Controller.MovePad(e.GetPosition(this).Y, _pad2);
         }
 
+        /// <summary>
+        /// Obsluga zdarzenia KeyDown
+        /// Rozpoczyna gre gdy zostanie nacisniety dowolny przycisk
+        /// </summary>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if(Keyboard.IsKeyDown(Key.F1))
-                Controller.StopGame();
-
-            if (Keyboard.IsKeyDown(Key.F2))
-            {
-                Controller.ResetGame();
-                Controller.StartGame();
-            }
-
             if(!gameStarted)
             {
                 startMessage.Visibility = Visibility.Hidden;
-                Controller.RunGame();
+                Controller.SetUpGame();
                 gameStarted = !gameStarted;
             }
 

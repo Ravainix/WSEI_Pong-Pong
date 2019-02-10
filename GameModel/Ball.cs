@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace GameModel
 {
+    /// <summary>
+    /// Klasa reprezentujaca pilke
+    /// </summary>
     public class Ball : INotifyPropertyChanged
     {
         private double x;
@@ -42,8 +45,15 @@ namespace GameModel
             this.height = radius;
         }
 
+
+        /// <summary>
+        /// Zdarzenie powiadamiajace o zmianie wlasciwosci
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Obsluga zdarzenia PropertyChanged
+        /// </summary>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
