@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Ping Pong" Height="430" Width="618"
         ResizeMode="NoResize" 
-       >
+        KeyDown="Window_KeyDown" >
     <Canvas Name="Canvas"  Width="600" Height="400" Background="#e8ecf1"  MouseMove="HandleMouseMove">
         <Rectangle x:Name="paddel1" 
                         Height="{Binding Height}" Width="{Binding Width}" Fill="#FF04BD2E" 
@@ -17,16 +17,16 @@
                         Height="{Binding Height}" Width="{Binding Width}" Fill="#FFFF000C" 
                         Canvas.Top="{Binding Y}"
                         Canvas.Right="{Binding X}"/>
-        <Line X1="560" X2="560" StrokeThickness="1" Stroke="Black" Y2="400"/>
         <Ellipse x:Name="Ball1" Width="{Binding Radius}" Height="{Binding Radius}" 
                      StrokeThickness="0.1" Fill="#000"
                      Canvas.Left="{Binding X}"
                      Canvas.Top="{Binding Y}" />
 
         <Label x:Name="Score" 
-               Content="{Binding X}"
-               FontSize="20" Canvas.Left="295"
+               Content="{Binding PlayersScore}"
+               FontSize="20" Canvas.Left="290"
                />
+        <Label Name="startMessage" Content="PRESS ANY KEY TO START" Canvas.Left="146" Canvas.Top="179" Height="42" Width="308" FontSize="24" FontWeight="Bold"/>
     </Canvas>
 
 </Window>

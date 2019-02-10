@@ -29,14 +29,13 @@ namespace Ping_pong_WPF
             this.score = score;
         }
 
-        private double _angle = 140;
-        private double _speed = 2;
-
-        public double Angle { get => _angle; set => _angle = value; }
-        public double Speed { get => _speed; set => _speed = value; }
-
         private double VelocityX;
         private double VelocityY;
+        private double paddelV;
+        private bool aiStatus = true;
+
+        public double PaddelVelocity { get => paddelV; set => paddelV = value; }
+        public bool AiTurnOn { get => aiStatus; set => aiStatus = value; }
 
         public void RunGame()
         {
@@ -53,7 +52,18 @@ namespace Ping_pong_WPF
             timer.Stop();
         }
 
+        public void StartGame()
+        {
+            timer.Start();
+        }
+
         private void Timer_Tick(object sender, EventArgs e)
+        {
+            ProcessAI(AiTurnOn);
+            UpdateBallPosition();
+        }
+
+        private void UpdateBallPosition()
         {
             double newBallX = ball.X + VelocityX * 10;
             double newBallY = ball.Y + VelocityY * 10;
@@ -66,17 +76,19 @@ namespace Ping_pong_WPF
             double ballSpeed;
             double ballTravelLeft;
 
-            if(newBallY < 0)
+            //top and bottom bounce 
+            if (newBallY < 0)
             {
                 newBallY = -newBallY;
                 VelocityY = -VelocityY;
-            } else if(newBallY + 10 > canv.Height)
+            }
+            else if (newBallY + 10 > canv.Height)
             {
                 newBallY -= 2 * ((newBallY + 10) - (canv.Height));
                 VelocityY = -VelocityY;
             }
 
-            //lewa 
+            //left paddle 
             if (newBallX < paddlePlayer.X + paddlePlayer.Width && ball.X >= paddlePlayer.X + paddlePlayer.Width)
             {
                 intersectX = paddlePlayer.X + paddlePlayer.Width;
@@ -95,7 +107,7 @@ namespace Ping_pong_WPF
             }
 
 
-            //prawa
+            //right and paddle
             if (newBallX > canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width && ball.X <= canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width)
             {
                 intersectX = canv.Width - paddleAI.X - paddleAI.Width - paddleAI.Width;
@@ -114,28 +126,37 @@ namespace Ping_pong_WPF
             }
 
 
-            //SpeedUp();
-
+            //left and right, add score
             if (ball.X > canv.Width - 20)
             {
-                score.Player1Win();
                 StopGame();
+                ResetGame();
+                score.Player1Win();
+                return;
             }
 
             if (ball.X < 0)
             {
-                score.Player2Win();
                 StopGame();
+                ResetGame();
+                score.Player2Win();
+                return;
             }
 
+            //set new position
             ball.X = newBallX;
             ball.Y = newBallY;
         }
 
-        private void ResetGame ()
+        public void ResetGame ()
         {
-            ball.X = canv.Width / 2;
-            ball.Y = canv.Height / 2;
+            ball.X = 300;
+            ball.Y = 200;
+
+            VelocityX = 0.8;
+            VelocityY = 0.001;
+
+            StartGame();
         }
 
         public void MovePad(double Y, Pad pad)
@@ -152,6 +173,45 @@ namespace Ping_pong_WPF
             if (middlePad <= 0)
             {
                 pad.Y = 0;
+            }
+        }
+
+        public void ProcessAI(bool state)
+        {
+            if (state)
+            {
+                if (VelocityX > 0 && ball.X + (ball.Radius / 2) > canv.Width / 2)
+                {
+                    if (ball.Y + (ball.Radius / 2) != paddleAI.Y + (paddleAI.Height / 2))
+                    {
+                        var timeTilCollision = ((canv.Width - paddleAI.X - paddleAI.Width) - ball.X) / (VelocityX);
+                        var distanceWanted = (paddleAI.Y + (paddleAI.Height / 2)) - (ball.Y + (ball.Radius / 2));
+                        var velocityWanted = -distanceWanted / timeTilCollision;
+                        if (velocityWanted > 1)
+                        {
+                            PaddelVelocity = 1;
+                        }
+                        else if (velocityWanted < -1)
+                        {
+                            PaddelVelocity = -1;
+                        }
+                        else
+                        {
+                            PaddelVelocity = velocityWanted;
+                        }
+                    }
+                    else
+                    {
+                        PaddelVelocity = 0;
+                    }
+                }
+                else
+                {
+                    PaddelVelocity = 0;
+                }
+                
+                //move paddle
+                paddleAI.Y += PaddelVelocity * 10;
             }
         }
     }
